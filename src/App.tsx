@@ -1,9 +1,11 @@
-import { type PostType } from './components/Post.tsx';
-import { useState } from 'react';
+import { type PostProps, type PostType } from './components/Post.tsx';
+import { type FormEvent, useState } from 'react';
 import { PostList } from './components/PostList.tsx';
+import { Input } from './components/UI/Input.tsx';
+import { Button } from './components/UI/Button.tsx';
 
 export const App = () => {
-  const [posts] = useState<PostType[]>([
+  const [posts, setPosts] = useState<PostType[]>([
     {
       id: 1,
       title: 'Understanding React Hooks',
@@ -31,12 +33,37 @@ export const App = () => {
     },
   ]);
 
+  const [post, setPost] = useState<PostProps>({ title: '', body: '' });
+
+  const addNewPost = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPosts([...posts, { ...post, id: Date.now() }]);
+    setPost({ title: '', body: '' });
+  };
+
   return (
-    <div className="mx-auto max-w-[640px] pb-32">
+    <div className="mx-auto max-w-[640px] px-4 pb-32">
       <header className="py-16">
         <h1 className="text-center text-2xl font-bold">React Blog</h1>
       </header>
       <main>
+        <div className="mb-8 rounded-xl border-1 border-zinc-200 bg-white p-8">
+          <form onSubmit={addNewPost} className="flex flex-col gap-2">
+            <Input
+              value={post.title}
+              onChange={(e) => setPost({ ...post, title: e.target.value })}
+              placeholder="Title"
+              name="title"
+            />
+            <Input
+              value={post.body}
+              onChange={(e) => setPost({ ...post, body: e.target.value })}
+              placeholder="Body"
+              name="body"
+            />
+            <Button disabled={!post.title || !post.body}>Add Post</Button>
+          </form>
+        </div>
         <PostList posts={posts} />
       </main>
     </div>
