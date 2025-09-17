@@ -1,14 +1,16 @@
 import { Input } from './UI/Input.tsx';
 import { Button } from './UI/Button.tsx';
 import { type FormEvent, useState } from 'react';
-import type { PostProps, PostType } from './Post.tsx';
+import type { PostType } from './Post.tsx';
 
 export type PostFormType = {
   create: (post: PostType) => void;
 };
 
+export type PostFormData = Omit<PostType, 'id'>;
+
 export const PostForm = ({ create }: PostFormType) => {
-  const [post, setPost] = useState<PostProps>({ title: '', body: '' });
+  const [post, setPost] = useState<PostFormData>({ title: '', body: '' });
 
   const addNewPost = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

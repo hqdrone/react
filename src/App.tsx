@@ -36,6 +36,10 @@ export const App = () => {
     setPosts([...posts, post]);
   };
 
+  const onDeletePost = (id: number) => {
+    setPosts(posts.filter((post) => post.id !== id));
+  };
+
   return (
     <div className="mx-auto max-w-[640px] px-4 pb-32">
       <header className="py-16">
@@ -43,7 +47,7 @@ export const App = () => {
       </header>
       <main>
         <PostForm create={createPost} />
-        <PostList posts={posts} />
+        <PostList onDeletePost={onDeletePost} posts={posts} />
       </main>
     </div>
   );
