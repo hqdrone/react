@@ -2,35 +2,40 @@ import { type PostType } from './components/Post.tsx';
 import { useState } from 'react';
 import { PostList } from './components/PostList.tsx';
 import { PostForm } from './components/PostForm.tsx';
+import { Select } from './components/UI/Select.tsx';
+
+export type PostKeys = 'title' | 'description';
 
 export const App = () => {
   const [posts, setPosts] = useState<PostType[]>([
     {
       id: 1,
       title: 'Understanding React Hooks',
-      body: 'An introduction to useState, useEffect, and other hooks in React.',
+      description: 'An introduction to useState, useEffect, and other hooks in React.',
     },
     {
       id: 2,
       title: 'React Component Lifecycle',
-      body: 'Exploring the lifecycle methods and their equivalents in function components.',
+      description: 'Exploring the lifecycle methods and their equivalents in function components.',
     },
     {
       id: 3,
       title: 'TypeScript with React',
-      body: 'How to use TypeScript effectively with React to catch bugs early.',
+      description: 'How to use TypeScript effectively with React to catch bugs early.',
     },
     {
       id: 4,
       title: 'Managing State in React',
-      body: 'Overview of different state management approaches including Redux and Context API.',
+      description:
+        'Overview of different state management approaches including Redux and Context API.',
     },
     {
       id: 5,
       title: 'React Performance Optimization',
-      body: 'Tips and best practices to make React apps faster and more efficient.',
+      description: 'Tips and best practices to make React apps faster and more efficient.',
     },
   ]);
+  const [sortBy, setSortBy] = useState<string>('');
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
@@ -40,6 +45,11 @@ export const App = () => {
     setPosts(posts.filter((post) => post.id !== id));
   };
 
+  const onChangeSortBy = (value: PostKeys) => {
+    setSortBy(value);
+    setPosts(posts.sort((a, b) => a[value].localeCompare(b[value])));
+  };
+
   return (
     <div className="mx-auto max-w-[640px] px-4 pb-32">
       <header className="py-16">
@@ -47,6 +57,18 @@ export const App = () => {
       </header>
       <main>
         <PostForm create={createPost} />
+        <div className="mb-8">
+          <Select
+            onChange={onChangeSortBy}
+            value={sortBy}
+            defaultValue="Sort By"
+            options={[
+              { title: 'Title', value: 'title' },
+              { title: 'Description', value: 'description' },
+            ]}
+          />
+        </div>
+
         <PostList onDeletePost={onDeletePost} posts={posts} />
       </main>
     </div>

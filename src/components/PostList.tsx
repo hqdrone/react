@@ -17,7 +17,7 @@ export const PostList = ({ posts, onDeletePost }: PostListProps) => {
             onDeletePost={onDeletePost}
             id={post.id}
             title={post.title}
-            body={post.body}
+            description={post.description}
             key={post.id}
           />
         ))

@@ -10,7 +10,7 @@ export type PostFormType = {
 export type PostFormData = Omit<PostType, 'id'>;
 
 export const PostForm = ({ create }: PostFormType) => {
-  const [post, setPost] = useState<PostFormData>({ title: '', body: '' });
+  const [post, setPost] = useState<PostFormData>({ title: '', description: '' });
 
   const addNewPost = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ export const PostForm = ({ create }: PostFormType) => {
       id: Date.now(),
     };
     create(newPost);
-    setPost({ title: '', body: '' });
+    setPost({ title: '', description: '' });
   };
 
   return (
@@ -32,12 +32,12 @@ export const PostForm = ({ create }: PostFormType) => {
           name="title"
         />
         <Input
-          value={post.body}
-          onChange={(e) => setPost({ ...post, body: e.target.value })}
+          value={post.description}
+          onChange={(e) => setPost({ ...post, description: e.target.value })}
           placeholder="Body"
           name="body"
         />
-        <Button disabled={!post.title || !post.body}>Add Post</Button>
+        <Button disabled={!post.title || !post.description}>Add Post</Button>
       </form>
     </div>
   );
