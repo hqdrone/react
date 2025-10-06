@@ -1,8 +1,9 @@
 import { type PostType } from './components/Post.tsx';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PostList } from './components/PostList.tsx';
 import { PostForm } from './components/PostForm.tsx';
 import { Select } from './components/UI/Select.tsx';
+import { Input } from './components/UI/Input.tsx';
 
 export type PostKeys = 'title' | 'description';
 
@@ -36,6 +37,23 @@ export const App = () => {
     },
   ]);
   const [sortBy, setSortBy] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const sortedPosts = useMemo(() => {
+    console.log('getSortedPosts');
+    if (sortBy !== '') {
+      return [...posts].sort((a, b) => a[sortBy as PostKeys].localeCompare(b[sortBy as PostKeys]));
+    }
+    return posts;
+  }, [posts, sortBy]);
+
+  const sortedAndSearchedPosts = useMemo(() => {
+    return sortedPosts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(searchQuery) ||
+        post.description.toLowerCase().includes(searchQuery)
+    );
+  }, [searchQuery, sortedPosts]);
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
@@ -47,7 +65,6 @@ export const App = () => {
 
   const onChangeSortBy = (value: PostKeys) => {
     setSortBy(value);
-    setPosts(posts.sort((a, b) => a[value].localeCompare(b[value])));
   };
 
   return (
@@ -68,8 +85,15 @@ export const App = () => {
             ]}
           />
         </div>
+        <div className="mb-8">
+          <Input
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
 
-        <PostList onDeletePost={onDeletePost} posts={posts} />
+        <PostList onDeletePost={onDeletePost} posts={sortedAndSearchedPosts} />
       </main>
     </div>
   );
