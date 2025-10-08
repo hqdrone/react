@@ -2,10 +2,9 @@ import { type PostType } from './components/Post.tsx';
 import { useMemo, useState } from 'react';
 import { PostList } from './components/PostList.tsx';
 import { PostForm } from './components/PostForm.tsx';
-import { Select } from './components/UI/Select.tsx';
-import { Input } from './components/UI/Input.tsx';
-
-export type PostKeys = 'title' | 'description';
+import { PostFilter } from './components/PostFilter.tsx';
+import { type PostFilterType } from './components/PostFilter.tsx';
+export type PostKey = 'title' | 'description';
 
 export const App = () => {
   const [posts, setPosts] = useState<PostType[]>([
@@ -36,24 +35,24 @@ export const App = () => {
       description: 'Tips and best practices to make React apps faster and more efficient.',
     },
   ]);
-  const [sortBy, setSortBy] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<PostFilterType>({ sort: '', query: '' });
 
   const sortedPosts = useMemo(() => {
-    console.log('getSortedPosts');
-    if (sortBy !== '') {
-      return [...posts].sort((a, b) => a[sortBy as PostKeys].localeCompare(b[sortBy as PostKeys]));
+    if (filter.sort !== '') {
+      return [...posts].sort((a, b) =>
+        a[filter.sort as PostKey].localeCompare(b[filter.sort as PostKey])
+      );
     }
     return posts;
-  }, [posts, sortBy]);
+  }, [posts, filter.sort]);
 
   const sortedAndSearchedPosts = useMemo(() => {
     return sortedPosts.filter(
       (post) =>
-        post.title.toLowerCase().includes(searchQuery) ||
-        post.description.toLowerCase().includes(searchQuery)
+        post.title.toLowerCase().includes(filter.query) ||
+        post.description.toLowerCase().includes(filter.query)
     );
-  }, [searchQuery, sortedPosts]);
+  }, [filter.query, sortedPosts]);
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
@@ -63,10 +62,6 @@ export const App = () => {
     setPosts(posts.filter((post) => post.id !== id));
   };
 
-  const onChangeSortBy = (value: PostKeys) => {
-    setSortBy(value);
-  };
-
   return (
     <div className="mx-auto max-w-[640px] px-4 pb-32">
       <header className="py-16">
@@ -74,25 +69,7 @@ export const App = () => {
       </header>
       <main>
         <PostForm create={createPost} />
-        <div className="mb-8">
-          <Select
-            onChange={onChangeSortBy}
-            value={sortBy}
-            defaultValue="Sort By"
-            options={[
-              { title: 'Title', value: 'title' },
-              { title: 'Description', value: 'description' },
-            ]}
-          />
-        </div>
-        <div className="mb-8">
-          <Input
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
+        <PostFilter filter={filter} setFilter={setFilter} />
         <PostList onDeletePost={onDeletePost} posts={sortedAndSearchedPosts} />
       </main>
     </div>

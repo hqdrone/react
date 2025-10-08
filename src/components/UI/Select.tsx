@@ -1,4 +1,4 @@
-import type { PostKeys } from '../../App.tsx';
+import type { PostKey } from '../../App.tsx';
 
 export type SelectOption = { value: string; title: string };
 
@@ -6,7 +6,7 @@ export type SelectProps = {
   options: SelectOption[];
   defaultValue: string;
   value: string;
-  onChange: (value: PostKeys) => void;
+  onChange: (value: PostKey) => void;
 };
 
 export const Select = ({ options, defaultValue, value, onChange }: SelectProps) => {
@@ -16,7 +16,7 @@ export const Select = ({ options, defaultValue, value, onChange }: SelectProps) 
         name="sortBy"
         className="h-[48px] w-full appearance-none rounded-lg border-1 border-zinc-200 bg-white px-4"
         value={value}
-        onChange={(e) => onChange(e.target.value as PostKeys)}
+        onChange={(e) => onChange(e.target.value as PostKey)}
       >
         <option value="" disabled>
           {defaultValue}
