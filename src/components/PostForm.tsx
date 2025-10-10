@@ -23,7 +23,7 @@ export const PostForm = ({ create }: PostFormType) => {
   };
 
   return (
-    <div className="mb-8 rounded-xl border-1 border-zinc-200 bg-white p-8">
+    <div className="rounded-xl border-zinc-200 bg-white">
       <form onSubmit={addNewPost} className="flex flex-col gap-2">
         <Input
           value={post.title}

@@ -4,6 +4,8 @@ import { PostList } from './components/PostList.tsx';
 import { PostForm } from './components/PostForm.tsx';
 import { PostFilter } from './components/PostFilter.tsx';
 import { type PostFilterType } from './components/PostFilter.tsx';
+import { Modal } from './components/UI/Modal.tsx';
+import { Button } from './components/UI/Button.tsx';
 export type PostKey = 'title' | 'description';
 
 export const App = () => {
@@ -36,6 +38,7 @@ export const App = () => {
     },
   ]);
   const [filter, setFilter] = useState<PostFilterType>({ sort: '', query: '' });
+  const [modalOpen, setModalOpen] = useState(false);
 
   const sortedPosts = useMemo(() => {
     if (filter.sort !== '') {
@@ -56,6 +59,7 @@ export const App = () => {
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
+    setModalOpen(false);
   };
 
   const onDeletePost = (id: number) => {
@@ -68,8 +72,13 @@ export const App = () => {
         <h1 className="text-center text-2xl font-bold">React Blog</h1>
       </header>
       <main>
-        <PostForm create={createPost} />
         <PostFilter filter={filter} setFilter={setFilter} />
+        <div className="mb-4 flex justify-end">
+          <Button onClick={() => setModalOpen(true)}>Add Post</Button>
+        </div>
+        <Modal isOpen={modalOpen} title="Add Post" onClose={() => setModalOpen(false)}>
+          <PostForm create={createPost} />
+        </Modal>
         <PostList onDeletePost={onDeletePost} posts={sortedAndSearchedPosts} />
       </main>
     </div>
