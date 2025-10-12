@@ -8,9 +8,10 @@ export type PostListType = {
 export type PostListProps = PostListType & {
   onDeletePost: (id: number) => void;
   loading: boolean;
+  error: string;
 };
 
-export const PostList = ({ posts, onDeletePost, loading }: PostListProps) => {
+export const PostList = ({ posts, onDeletePost, loading, error }: PostListProps) => {
   return (
     <div className="rounded-xl border-1 border-zinc-200 bg-white py-8">
       <AnimatePresence>
@@ -26,7 +27,7 @@ export const PostList = ({ posts, onDeletePost, loading }: PostListProps) => {
           ))
         ) : (
           <div className="p-8 text-center font-light text-zinc-300">
-            {loading ? 'Loading...' : 'Posts not found'}
+            {error ? error : loading ? 'Loading...' : 'Posts not found'}
           </div>
         )}
       </AnimatePresence>

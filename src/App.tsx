@@ -8,6 +8,7 @@ import { Modal } from './components/UI/Modal.tsx';
 import { Button } from './components/UI/Button.tsx';
 import { usePosts } from './hooks/usePosts.ts';
 import { PostService } from './API/PostService.ts';
+import { useFetching } from './hooks/useFetching.ts';
 export type PostKey = 'title' | 'body';
 
 export const App = () => {
@@ -15,17 +16,14 @@ export const App = () => {
   const [filter, setFilter] = useState<PostFilterType>({ sort: '', query: '' });
   const [modalOpen, setModalOpen] = useState(false);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [fetchPosts, postsLoading, postsError] = useFetching(async () => {
+    const posts = await PostService.getAll();
+    setPosts(posts);
+  });
+
   useEffect(() => {
     fetchPosts();
   }, []);
-
-  async function fetchPosts() {
-    setLoadingPosts(true);
-    const posts = await PostService.getAll();
-    setPosts(posts);
-    setLoadingPosts(false);
-  }
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
@@ -51,8 +49,9 @@ export const App = () => {
         </Modal>
         <PostList
           onDeletePost={onDeletePost}
-          loading={loadingPosts}
+          loading={postsLoading}
           posts={sortedAndSearchedPosts}
+          error={postsError}
         />
       </main>
     </div>
