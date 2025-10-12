@@ -1,11 +1,12 @@
 import { type PostType } from './components/Post.tsx';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { PostList } from './components/PostList.tsx';
 import { PostForm } from './components/PostForm.tsx';
 import { PostFilter } from './components/PostFilter.tsx';
 import { type PostFilterType } from './components/PostFilter.tsx';
 import { Modal } from './components/UI/Modal.tsx';
 import { Button } from './components/UI/Button.tsx';
+import { usePosts } from './hooks/usePosts.ts';
 export type PostKey = 'title' | 'description';
 
 export const App = () => {
@@ -39,23 +40,7 @@ export const App = () => {
   ]);
   const [filter, setFilter] = useState<PostFilterType>({ sort: '', query: '' });
   const [modalOpen, setModalOpen] = useState(false);
-
-  const sortedPosts = useMemo(() => {
-    if (filter.sort !== '') {
-      return [...posts].sort((a, b) =>
-        a[filter.sort as PostKey].localeCompare(b[filter.sort as PostKey])
-      );
-    }
-    return posts;
-  }, [posts, filter.sort]);
-
-  const sortedAndSearchedPosts = useMemo(() => {
-    return sortedPosts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(filter.query) ||
-        post.description.toLowerCase().includes(filter.query)
-    );
-  }, [filter.query, sortedPosts]);
+  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
