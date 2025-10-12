@@ -11,7 +11,17 @@ export type PostFilterProps = {
   setFilter: (filter: PostFilterType) => void;
 };
 
+type SelectOptionType = {
+  title: 'Title' | 'Body';
+  value: 'title' | 'body';
+};
+
 export const PostFilter = ({ filter, setFilter }: PostFilterProps) => {
+  const selectOptions: SelectOptionType[] = [
+    { title: 'Title', value: 'title' },
+    { title: 'Body', value: 'body' },
+  ];
+
   return (
     <div className="mb-8 grid grid-cols-2 gap-2">
       <Input
@@ -23,10 +33,7 @@ export const PostFilter = ({ filter, setFilter }: PostFilterProps) => {
         onChange={(selectedSort) => setFilter({ ...filter, sort: selectedSort })}
         value={filter.sort}
         defaultValue="Sort By"
-        options={[
-          { title: 'Title', value: 'title' },
-          { title: 'Description', value: 'description' },
-        ]}
+        options={selectOptions}
       />
     </div>
   );

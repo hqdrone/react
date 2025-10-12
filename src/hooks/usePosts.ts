@@ -16,7 +16,7 @@ export const usePosts = (posts: PostType[], sort: string, query: string) => {
   return useMemo(() => {
     return sortedPosts.filter(
       (post: PostType) =>
-        post.title.toLowerCase().includes(query) || post.description.toLowerCase().includes(query)
+        post.title.toLowerCase().includes(query) || post.body.toLowerCase().includes(query)
     );
   }, [query, sortedPosts]);
 };
