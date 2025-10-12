@@ -1,3 +1,5 @@
+import { motion } from 'motion/react';
+
 export type PostType = {
   id: number;
   title: string;
@@ -10,7 +12,13 @@ export type PostProps = PostType & {
 
 export const Post = ({ id, title, description, onDeletePost }: PostProps) => {
   return (
-    <div className="group relative p-8 hover:bg-zinc-50">
+    <motion.div
+      key={id}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ scale: 0.8, opacity: 0 }}
+      className="group relative overflow-hidden p-8 hover:bg-zinc-50"
+    >
       <div className="mb-2 text-xl">{title}</div>
       <div className="font-light text-zinc-400">{description}</div>
       <button
@@ -19,6 +27,6 @@ export const Post = ({ id, title, description, onDeletePost }: PostProps) => {
       >
         Delete
       </button>
-    </div>
+    </motion.div>
   );
 };
