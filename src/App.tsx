@@ -9,21 +9,34 @@ import { Button } from './components/UI/Button.tsx';
 import { usePosts } from './hooks/usePosts.ts';
 import { PostService } from './API/PostService.ts';
 import { useFetching } from './hooks/useFetching.ts';
+import { getPagesCount } from './utils/pages.ts';
+import { usePagination } from './hooks/usePagination.ts';
 export type PostKey = 'title' | 'body';
 
 export const App = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [filter, setFilter] = useState<PostFilterType>({ sort: '', query: '' });
   const [modalOpen, setModalOpen] = useState(false);
+  const [limit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const pages = usePagination(totalPages);
+
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
   const [fetchPosts, postsLoading, postsError] = useFetching(async () => {
-    const posts = await PostService.getAll();
-    setPosts(posts);
+    const response = await PostService.getAll(limit, page);
+    const totalCount = response.headers['x-total-count'];
+    setTotalPages(getPagesCount(totalCount, limit));
+    setPosts(response.data);
   });
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [page]);
 
   const createPost = (post: PostType) => {
     setPosts([...posts, post]);
@@ -53,6 +66,17 @@ export const App = () => {
           posts={sortedAndSearchedPosts}
           error={postsError}
         />
+        <div className="mt-8 flex flex-wrap gap-2">
+          {pages.map((p) => (
+            <Button
+              key={p}
+              onClick={() => setPage(p)}
+              className={p === page ? '' : 'border-zinc-200 !bg-white !text-black'}
+            >
+              {p}
+            </Button>
+          ))}
+        </div>
       </main>
     </div>
   );

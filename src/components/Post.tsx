@@ -19,7 +19,9 @@ export const Post = ({ id, title, body, onDeletePost }: PostProps) => {
       exit={{ scale: 0.8, opacity: 0 }}
       className="group relative overflow-hidden p-8 hover:bg-zinc-50"
     >
-      <div className="mb-2 pr-16 text-xl">{title}</div>
+      <div className="mb-2 pr-16 text-xl">
+        <span className="text-4xl font-black text-gray-100">{id}.</span> {title}
+      </div>
       <div className="font-light text-zinc-400">{body}</div>
       <button
         onClick={() => onDeletePost(id)}
