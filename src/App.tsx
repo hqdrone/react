@@ -10,7 +10,8 @@ import { usePosts } from './hooks/usePosts.ts';
 import { PostService } from './API/PostService.ts';
 import { useFetching } from './hooks/useFetching.ts';
 import { getPagesCount } from './utils/pages.ts';
-import { usePagination } from './hooks/usePagination.ts';
+import { Pagination } from './components/UI/Pagination.tsx';
+
 export type PostKey = 'title' | 'body';
 
 export const App = () => {
@@ -20,7 +21,6 @@ export const App = () => {
   const [limit] = useState(10);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pages = usePagination(totalPages);
 
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
   const [fetchPosts, postsLoading, postsError] = useFetching(async () => {
@@ -66,17 +66,7 @@ export const App = () => {
           posts={sortedAndSearchedPosts}
           error={postsError}
         />
-        <div className="mt-8 flex flex-wrap gap-2">
-          {pages.map((p) => (
-            <Button
-              key={p}
-              onClick={() => setPage(p)}
-              className={p === page ? '' : 'border-zinc-200 !bg-white !text-black'}
-            >
-              {p}
-            </Button>
-          ))}
-        </div>
+        <Pagination page={page} totalPages={totalPages} setPage={(p) => setPage(p)} />
       </main>
     </div>
   );
